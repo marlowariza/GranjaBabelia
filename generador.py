@@ -6,8 +6,8 @@ from datetime import datetime
 import argparse
 
 #Conf
-API_KEY = "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"
-API_URL = "https://openrouter.ai/api/v1/chat/completions"
+API_KEY = "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"
+API_URL = "https://openrouter.ai/api/v1"
 MODEL = "allenai/molmo-7b-d:free"
 
 # Headers requeridos por OpenRouter
