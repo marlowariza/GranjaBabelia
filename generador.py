@@ -3,13 +3,22 @@ import json
 import random
 import time
 from datetime import datetime
+import argparse  # Nuevo import para manejar argumentos
 
 # Configuración
-API_KEY = "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" 
+API_KEY = "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"
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
 MODEL = "allenai/molmo-7b-d:free"
 
-# Niveles
+# Headers requeridos por OpenRouter
+headers = {
+    "Authorization": f"Bearer {API_KEY}",
+    "Content-Type": "application/json",
+    "HTTP-Referer": "https://github.com/marlowariza/GranjaBabelia",
+    "X-Title": "Generador de Palabras MCER"
+}
+
+# Niveles de competencia lingüística
 niveles = ["A1", "A2", "B1", "B2", "C1", "C2"]
 
 def generar_palabra():
@@ -42,12 +51,7 @@ Respuesta:"""
     try:
         response = requests.post(
             url=API_URL,
-            headers={
-                "Authorization": f"Bearer {API_KEY}",
-                "Content-Type": "application/json",
-                "HTTP-Referer": "https://github.com/marlowariza/GranjaBabelia",
-                "X-Title": "Generador de Palabras MCER"
-            },
+            headers=headers,
             data=json.dumps({
                 "model": MODEL,
                 "messages": [prompt],
@@ -57,7 +61,6 @@ Respuesta:"""
         )
         
         # Debug: Mostrar respuesta en crudo
-        # Primeros testeos
         print(f"Respuesta API (cruda): {response.text}")
         
         if response.status_code == 200:
@@ -103,16 +106,28 @@ def guardar_palabra(palabra, nivel):
         return False
 
 def main():
+    # Manejo de argumentos
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--run-once', action='store_true', help='Ejecuta solo una generación')
+    args = parser.parse_args()
+
     # Inicializar archivo
     try:
         with open("palabras_generadas.txt", "a+", encoding="utf-8") as f:
-            if f.tell() == 0:  # Archivo vacio
+            if f.tell() == 0:  # Archivo vacío
                 f.write("// Listado generado automáticamente - " + datetime.now().strftime("%Y-%m-%d %H:%M") + "\n\n")
     except Exception as e:
         print(f"Error inicializando archivo: {e}")
         return
     
-    # Bucle
+    # Modo ejecución única (para GitHub Actions)
+    if args.run_once:
+        palabra, nivel = generar_palabra()
+        if palabra and nivel:
+            guardar_palabra(palabra, nivel)
+        return
+    
+    # Bucle principal (para ejecución local)
     contador = 0
     while True:
         contador += 1
