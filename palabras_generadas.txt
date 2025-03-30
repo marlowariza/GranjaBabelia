@@ -1,0 +1,11 @@
+// Listado generado automáticamente
+
+insertWord("felicidad", "A2");
+insertWord("naranja", "A2");
+insertWord("inefable", "C2");
+insertWord("silla", "B2");
+insertWord("balanza", "A2");
+insertWord("gato", "A2");
+insertWord("novela", "C2");
+insertWord("perro", "A1");
+insertWord("libros", "A2");
